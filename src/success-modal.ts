@@ -33,7 +33,7 @@ export class SuccessModal extends Modal {
 
         // Requirement Warning (Only if Datacore is not enabled)
         // @ts-ignore
-        const isDatacoreEnabled = this.app.plugins?.enabledPlugins?.has('datacore');
+        const isDatacoreEnabled = this.app.plugins?.getPlugin('datacore');
         
         if (!isDatacoreEnabled) {
             const reqBox = contentEl.createDiv({ cls: 'beto-modal-req-box' });
