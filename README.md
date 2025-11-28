@@ -15,11 +15,7 @@
 
 <!-- TOP 3 BADGES (PURPLE) -->
 
-<a href="https://beto.group"><img src="https://img.shields.io/badge/WEBSITE-7A46F1?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtZ2xvYmUiPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIi8+PHBhdGggZD0iTTEyIDJBNTYuNDggNTYuNDggMCAwIDAgNiA2djEyYTQ1LjQxIDQ1LjQxIDAgMCAwIDYgNHoiLz48cGF0aCBkPSJNMTIgMmE1Ni40OCAzNS40OCAwIDAgMSA2IDZ2MTJhNDUuNDEgNDUuNDEgMCAwIDEtNiA0eiIvPjwvc3ZnPg==" alt="Wᴇʙsɪᴛᴇ"></a>
-
-<a href="https://discord.com/invite/6rDp4q4Y2B"><img src="https://img.shields.io/badge/DISCORD-7A46F1?style=for-the-badge&logo=discord&logoColor=white" alt="Jᴏɪɴ ᴏᴜʀ Dɪsᴄᴏʀᴅ ᴄᴏᴍᴍᴜɴɪᴛʏ"></a>
-
-<a href="https://ko-fi.com/betogroup"><img src="https://img.shields.io/badge/Support-7A46F1?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Sᴜᴘᴘᴏʀᴛ ᴜs ᴏɴ Kᴏ-ғɪ"></a>
+<a href="https://beto.group"><img src="https://img.shields.io/badge/WEBSITE-7A46F1?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtZ2xvYmUiPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIi8+PHBhdGggZD0iTTEyIDJBNTYuNDggNTYuNDggMCAwIDAgNiA2djEyYTQ1LjQxIDQ1LjQxIDAgMCAwIDYgNHoiLz48cGF0aCBkPSJNMTIgMmE1Ni40OCAzNS40OCAwIDAgMSA2IDZ2MTJhNDUuNDEgNDUuNDEgMCAwIDEtNiA0eiIvPjwvc3ZnPg==" alt="Wᴇʙsɪᴛᴇ"></a>&nbsp;<a href="https://discord.com/invite/6rDp4q4Y2B"><img src="https://img.shields.io/badge/DISCORD-7A46F1?style=for-the-badge&logo=discord&logoColor=white" alt="Jᴏɪɴ ᴏᴜʀ Dɪsᴄᴏʀᴅ ᴄᴏᴍᴍᴜɴɪᴛʏ"></a>&nbsp;<a href="https://ko-fi.com/betogroup"><img src="https://img.shields.io/badge/Support-7A46F1?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Sᴜᴘᴘᴏʀᴛ ᴜs ᴏɴ Kᴏ-ғɪ"></a>
 
 <br/><br><br/>
 
@@ -88,7 +84,7 @@ Since Beto Marketplace is currently in review for the official Community Plugins
 
   
 
-![BRAT Installation Guide](https://raw.githubusercontent.com/beto-group/beto-marketplace/main/assets/install-brat.gif)
+<img alt="BRAT Installation Guide" src="https://raw.githubusercontent.com/beto-group/beto.assets/main/MARKETPLACE/beto-marketplace-installation-brat.gif" width="100%" />
 
   
 
@@ -96,7 +92,7 @@ Since Beto Marketplace is currently in review for the official Community Plugins
 
 2. Open the command palette (`Cmd/Ctrl + P`) and search for `BRAT: Add a beta plugin for testing`.
 
-3. Enter the repository URL: `https://github.com/beto-group/beto-marketplace`.
+3. Enter the repository URL: `https://github.com/beto-group/beto-marketplace/`.
 
 4. Click **Add Plugin**.
 
@@ -122,15 +118,11 @@ Since Beto Marketplace is currently in review for the official Community Plugins
 
 ## Usage
 
-  
+1. Visit: [marketplace.beto.group](https://marketplace.beto.group)
 
-1. Open the **Beto Marketplace** view from the ribbon icon (the "Beto" logo) or use the command palette: `Beto Marketplace: Open Marketplace`.
+2. Browse available components.
 
-2. Browse the available components.
-
-3. Click **Install** on any component you wish to add.
-
-4. The component will be downloaded and configured automatically.
+3. Press on: **Deploy on Vault**.
 
   
 
