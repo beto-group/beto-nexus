@@ -29,10 +29,6 @@ Bʀᴏᴡsᴇ, ᴅɪsᴄᴏᴠᴇʀ, ᴀɴᴅ ɪɴsᴛᴀʟʟ ᴀᴅᴠᴀɴᴄ�
 
 </div>
 
-
-
----
-
   
 
 <img alt="Beto Marketplace Demo" src="https://raw.githubusercontent.com/beto-group/beto.assets/main/MARKETPLACE/beto-marketplace-trailer.gif" width="100%" />
