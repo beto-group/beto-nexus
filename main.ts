@@ -3,7 +3,6 @@ import { BetoMarketplaceSettings, DEFAULT_SETTINGS, BetoMarketplaceSettingTab } 
 import { DatacoreDownloader } from './src/downloader';
 import { AuthManager } from './src/auth';
 import { ComponentManager } from './src/manager';
-import { ConfirmModal } from './src/confirm-modal';
 import { PROTOCOL_ACTION_AUTH, PROTOCOL_ACTION_DEPLOY } from './src/constants';
 
 export default class BetoMarketplace extends Plugin {
@@ -67,15 +66,8 @@ export default class BetoMarketplace extends Plugin {
 			// Update settings reference in downloader in case they changed
 			this.downloader.settings = this.settings;
 
-			// SECURITY: Ask for confirmation before downloading
-			new ConfirmModal(
-				this.app,
-				'Install Component?',
-				`Do you want to download and install the component "${id}"? This will add files to your vault.`,
-				async () => {
-					await this.downloader.downloadComponent(id, authToken);
-				}
-			).open();
+			// Direct download as components are trusted
+			await this.downloader.downloadComponent(id, authToken);
 		});
 
 		this.registerObsidianProtocolHandler(PROTOCOL_ACTION_AUTH, async (params) => {
