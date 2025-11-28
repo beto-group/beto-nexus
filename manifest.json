@@ -1,0 +1,10 @@
+{
+  "id": "beto-marketplace",
+  "name": "Beto Marketplace",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Browse, download, and manage Datacore components from the Beto Marketplace.",
+  "author": "beto.group",
+  "authorUrl": "https://beto.group",
+  "isDesktopOnly": false
+}
