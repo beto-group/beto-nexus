@@ -15,7 +15,7 @@ export class AuthManager {
 		this.onAuthChange = onAuthChange;
 	}
 
-	async handleAuthCallback(code: string): Promise<string | null> {
+	async handleAuthCallback(code: string, silent: boolean = false): Promise<string | null> {
 		if (!code) {
 			new Notice('Authentication failed: No code received.');
 			return null;
@@ -42,9 +42,14 @@ export class AuthManager {
 			}
 
 			const { token } = response.json;
+			const previousToken = this.settings.authToken;
 			this.settings.authToken = token;
 			await this.saveSettings();
-			new Notice('Successfully logged in to Beto Marketplace!');
+			
+			// Only show notice if account actually changed (or was previously not logged in)
+			if (!silent && token !== previousToken) {
+				new Notice('Successfully logged in to Beto Marketplace!');
+			}
 			
 			if (this.onAuthChange) this.onAuthChange();
 			return token;

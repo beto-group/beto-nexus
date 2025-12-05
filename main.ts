@@ -113,10 +113,12 @@ export default class BetoMarketplace extends Plugin {
 				return;
 			}
 
-			// If we received an auth code, ALWAYS exchange it to sync account with website
-			// This ensures the plugin uses the same account that initiated the deploy on the website
+			// If we received an auth code, exchange it to sync account with website
+			// This ensures the plugin uses the same account that initiated the deploy
 			if (code) {
-				const newToken = await this.authManager.handleAuthCallback(code);
+				// Check if we're already logged in - if so, use silent mode to avoid redundant notice
+				const wasLoggedIn = !!this.settings.authToken;
+				const newToken = await this.authManager.handleAuthCallback(code, wasLoggedIn);
 				if (newToken) {
 					this.settings.authToken = newToken;
 					// Ensure downloader has latest settings
