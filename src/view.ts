@@ -1,25 +1,37 @@
-import { ItemView, WorkspaceLeaf, setIcon, Notice } from "obsidian";
-import { ComponentManager, InstalledComponent } from "./manager";
-import { BetoMarketplaceSettings } from "./settings";
+import { ItemView, WorkspaceLeaf, setIcon, Notice, ButtonComponent } from "obsidian";
+import { ComponentManager } from "./manager";
+import { BetoNexusSettings } from "./settings";
 
-export const VIEW_TYPE_BETO_MARKETPLACE = "beto-marketplace-view";
+// Interface for the API passed from main.ts
+export interface BetoNexusAPI {
+    getUser(): Promise<any | null>;
+    login(code: string): Promise<boolean>;
+    logout(): void;
+}
 
-export class BetoMarketplaceView extends ItemView {
+export const VIEW_TYPE_BETO_NEXUS = "beto-nexus-view";
+
+export class BetoNexusView extends ItemView {
   manager: ComponentManager;
-  settings: BetoMarketplaceSettings;
+  settings: BetoNexusSettings;
+  api: BetoNexusAPI;
+  openSettings: () => void;
+  activeTab: 'dashboard' | 'library' = 'dashboard';
 
-  constructor(leaf: WorkspaceLeaf, manager: ComponentManager, settings: BetoMarketplaceSettings) {
+  constructor(leaf: WorkspaceLeaf, manager: ComponentManager, settings: BetoNexusSettings, api: BetoNexusAPI, openSettings: () => void) {
     super(leaf);
     this.manager = manager;
     this.settings = settings;
+    this.api = api;
+    this.openSettings = openSettings;
   }
 
   getViewType() {
-    return VIEW_TYPE_BETO_MARKETPLACE;
+    return VIEW_TYPE_BETO_NEXUS;
   }
 
   getDisplayText() {
-    return "Beto Marketplace";
+    return "Beto Nexus";
   }
 
   getIcon() {
@@ -33,21 +45,110 @@ export class BetoMarketplaceView extends ItemView {
   async render() {
     const container = this.containerEl.children[1];
     container.empty();
-    container.addClass("beto-marketplace-container");
+    container.addClass("beto-nexus-container");
 
     // Header
     const header = container.createDiv({ cls: "beto-header" });
-    header.createEl("h1", { text: "Datacore Manager" });
-    
-    // Tabs (Simple implementation)
+    const title = header.createDiv({ cls: "beto-title" });
+    setIcon(title.createSpan({ cls: "beto-logo" }), "box");
+    title.createEl("h1", { text: "Beto Nexus" });
+
+    // Spacer
+    header.createDiv({ cls: "beto-spacer" }).style.flex = "1";
+
+    // Settings Button
+    const settingsBtn = header.createEl("button", { cls: "clickable-icon beto-settings-btn" });
+    setIcon(settingsBtn, "settings");
+    settingsBtn.setAttr("aria-label", "Open Settings");
+    settingsBtn.onclick = () => this.openSettings();
+
+    // Tabs
     const tabsContainer = container.createDiv({ cls: "beto-tabs" });
-    const libraryTab = tabsContainer.createEl("button", { text: "My Library", cls: "beto-tab active" });
-    // const storeTab = tabsContainer.createEl("button", { text: "Browse Store", cls: "beto-tab" }); // Future
+    
+    const dashboardTab = tabsContainer.createEl("button", { 
+        text: "Dashboard", 
+        cls: `beto-tab ${this.activeTab === 'dashboard' ? 'active' : ''}` 
+    });
+    dashboardTab.onclick = () => { this.activeTab = 'dashboard'; this.render(); };
+
+    const libraryTab = tabsContainer.createEl("button", { 
+        text: "My Library", 
+        cls: `beto-tab ${this.activeTab === 'library' ? 'active' : ''}` 
+    });
+    libraryTab.onclick = () => { this.activeTab = 'library'; this.render(); };
 
     // Content Area
     const contentArea = container.createDiv({ cls: "beto-content" });
     
-    await this.renderLibrary(contentArea);
+    if (this.activeTab === 'dashboard') {
+        await this.renderDashboard(contentArea);
+    } else {
+        await this.renderLibrary(contentArea);
+    }
+  }
+
+  async renderDashboard(container: HTMLElement) {
+    container.empty();
+    container.addClass("beto-dashboard");
+
+    const user = await this.api.getUser();
+
+    // User Card
+    const userCard = container.createDiv({ cls: "beto-card user-card" });
+    
+    if (user) {
+        const header = userCard.createDiv({ cls: "card-header" });
+        const avatar = header.createDiv({ cls: "user-avatar" });
+        avatar.setText(user.name ? user.name.charAt(0).toUpperCase() : "U");
+        
+        const info = header.createDiv({ cls: "user-info" });
+        info.createEl("h2", { text: user.name || "User" });
+        info.createEl("span", { text: user.email || "", cls: "user-email" });
+        
+        const badge = info.createDiv({ cls: "user-badge" });
+        badge.setText(user.tier || "Free Plan");
+
+        const actions = userCard.createDiv({ cls: "card-actions" });
+        new ButtonComponent(actions)
+            .setButtonText("Manage Account")
+            .onClick(() => {
+                window.open("https://beto.app/account", "_blank");
+            });
+            
+        new ButtonComponent(actions)
+            .setButtonText("Log Out")
+            .onClick(() => {
+                this.api.logout();
+                this.render();
+            });
+
+    } else {
+        userCard.addClass("not-logged-in");
+        userCard.createEl("h2", { text: "Welcome to Beto Nexus" });
+        userCard.createEl("p", { text: "Connect your account to access premium components and sync your settings." });
+        
+        new ButtonComponent(userCard)
+            .setButtonText("Connect Account")
+            .setCta()
+            .onClick(() => {
+                window.open("https://beto.app/login?source=obsidian", "_blank");
+            });
+    }
+
+    // Quick Links / News
+    const linksGrid = container.createDiv({ cls: "links-grid" });
+    
+    const marketplaceLink = linksGrid.createDiv({ cls: "beto-card link-card" });
+    setIcon(marketplaceLink.createDiv({ cls: "card-icon" }), "shopping-bag");
+    marketplaceLink.createEl("h3", { text: "Marketplace" });
+    marketplaceLink.createEl("p", { text: "Discover new components and plugins." });
+    marketplaceLink.onclick = () => window.open("https://beto.app/marketplace", "_blank");
+
+    const docsLink = linksGrid.createDiv({ cls: "beto-card link-card" });
+    setIcon(docsLink.createDiv({ cls: "card-icon" }), "book-open");
+    docsLink.createEl("h3", { text: "Documentation" });
+    docsLink.createEl("p", { text: "Learn how to build and use components." });
+    docsLink.onclick = () => window.open("https://docs.beto.app", "_blank");
   }
 
   async renderLibrary(container: HTMLElement) {

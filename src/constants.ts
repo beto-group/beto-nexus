@@ -4,6 +4,6 @@ export const PROTOCOL_ACTION_DEPLOY = 'deploy-datacore';
 export const PROTOCOL_ACTION_AUTH = 'beto-auth';
 
 export const PLUGIN_HEADERS = {
-    'X-Plugin-Name': 'beto-marketplace',
+    'X-Plugin-Name': 'beto-nexus',
     'X-Plugin-Source': 'obsidian'
 };

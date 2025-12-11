@@ -1,14 +1,15 @@
 import { App, Notice, requestUrl } from 'obsidian';
-import { BetoMarketplaceSettings } from './settings';
+import { BetoNexusSettings } from './settings';
 import { API_URL, PLUGIN_HEADERS } from './constants';
+import { EncryptionService } from './encryption';
 
 export class AuthManager {
 	app: App;
-	settings: BetoMarketplaceSettings;
+	settings: BetoNexusSettings;
 	saveSettings: () => Promise<void>;
 	onAuthChange?: () => void;
 
-	constructor(app: App, settings: BetoMarketplaceSettings, saveSettings: () => Promise<void>, onAuthChange?: () => void) {
+	constructor(app: App, settings: BetoNexusSettings, saveSettings: () => Promise<void>, onAuthChange?: () => void) {
 		this.app = app;
 		this.settings = settings;
 		this.saveSettings = saveSettings;
@@ -23,17 +24,20 @@ export class AuthManager {
 
 		try {
 			// Exchange code for token
+			const encryptedPayload = await EncryptionService.encrypt({
+				_action: 'auth/exchange-code',
+				code,
+				deviceId: this.settings.deviceId
+			});
+
 			const response = await requestUrl({
-				url: `${API_URL}/api/auth/exchange-code`,
+				url: `${API_URL}/api/ops`,
 				method: 'POST',
 				headers: { 
 					'Content-Type': 'application/json',
 					...PLUGIN_HEADERS
 				},
-				body: JSON.stringify({ 
-					code,
-					deviceId: this.settings.deviceId 
-				})
+				body: JSON.stringify(encryptedPayload)
 			});
 
 			if (response.status !== 200) {
@@ -41,7 +45,16 @@ export class AuthManager {
 				throw new Error(`Failed to exchange code: ${response.status}`);
 			}
 
-			const { token } = response.json;
+			const data = response.json;
+			let token = '';
+			
+			if (data.encrypted) {
+				const decrypted = await EncryptionService.decrypt(data);
+				token = decrypted.token;
+			} else {
+				token = data.token;
+			}
+
 			const previousToken = this.settings.authToken;
 			this.settings.authToken = token;
 			await this.saveSettings();

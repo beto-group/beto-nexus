@@ -1,7 +1,7 @@
 {
-  "name": "beto-marketplace",
+  "name": "beto-nexus",
   "version": "1.0.0",
-  "description": "Plugin: Beto Marketplace",
+  "description": "Plugin: Beto Nexus",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",

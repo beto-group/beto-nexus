@@ -1,14 +1,15 @@
 import { App, Notice, requestUrl, TFolder, TFile, normalizePath } from 'obsidian';
-import { BetoMarketplaceSettings } from './settings';
+import { BetoNexusSettings } from './settings';
 import { API_URL, PLUGIN_HEADERS } from './constants';
 import * as JSZip from 'jszip';
 import { SuccessModal } from './success-modal';
+import { EncryptionService } from './encryption';
 
 export class DatacoreDownloader {
 	app: App;
-	settings: BetoMarketplaceSettings;
+	settings: BetoNexusSettings;
 
-	constructor(app: App, settings: BetoMarketplaceSettings) {
+	constructor(app: App, settings: BetoNexusSettings) {
 		this.app = app;
 		this.settings = settings;
 	}
@@ -16,16 +17,22 @@ export class DatacoreDownloader {
 	async downloadComponent(id: string, token: string) {
 		// new Notice(`Downloading component...`);
 		try {
-			const url = `${API_URL}/api/download/${id}`;
-			// Using requestUrl to avoid CORS issues and use Obsidian's network stack
+			// Use encrypted gateway for download request
+			const encryptedPayload = await EncryptionService.encrypt({
+				_action: 'components/download',
+				id
+			});
+
 			const response = await requestUrl({
-				url: url,
-				method: 'GET',
+				url: `${API_URL}/api/ops`,
+				method: 'POST',
 				headers: {
 					'Authorization': `Bearer ${token}`,
 					'X-Device-Id': this.settings.deviceId,
+					'Content-Type': 'application/json',
 					...PLUGIN_HEADERS
-				}
+				},
+				body: JSON.stringify(encryptedPayload)
 			});
 
 			if (response.status !== 200) {
@@ -34,24 +41,49 @@ export class DatacoreDownloader {
 
 			// Parse JSON response to get the R2 signed URL
 			const data = response.json;
-			if (!data || !data.url) {
+			let downloadUrl = '';
+			let componentName = '';
+
+			if (data.encrypted) {
+				const decrypted = await EncryptionService.decrypt(data);
+				downloadUrl = decrypted.url;
+				componentName = decrypted.name;
+			} else {
+				downloadUrl = data.url;
+				componentName = data.name;
+			}
+
+			if (!downloadUrl) {
 				throw new Error("Invalid response from server: missing download URL");
 			}
-			const downloadUrl = data.url;
 			
-			let componentName = data.name;
 			if (!componentName) {
 				try {
 					// Fallback: Fetch component details to get the name
-					const compResponse = await requestUrl({
-						url: `${API_URL}/api/components/${id}`,
-						method: 'GET',
-						headers: {
-							...PLUGIN_HEADERS
-						}
+					// Also use encrypted gateway
+					const compPayload = await EncryptionService.encrypt({
+						_action: 'components/get',
+						id
 					});
+					
+					const compResponse = await requestUrl({
+						url: `${API_URL}/api/ops`,
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							...PLUGIN_HEADERS
+						},
+						body: JSON.stringify(compPayload)
+					});
+
 					if (compResponse.status === 200) {
-						componentName = compResponse.json.name;
+						const compData = compResponse.json;
+						if (compData.encrypted) {
+							const decryptedComp = await EncryptionService.decrypt(compData);
+							componentName = decryptedComp.name;
+						} else {
+							componentName = compData.name;
+						}
 					}
 				} catch (e) {
 					// Ignore error, fallback to ID

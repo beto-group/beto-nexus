@@ -1,9 +1,9 @@
 {
-  "id": "beto-marketplace",
-  "name": "Beto Marketplace",
+  "id": "beto-nexus",
+  "name": "Beto Nexus",
   "version": "1.0.0",
   "minAppVersion": "0.15.0",
-  "description": "Browse, download, and manage Datacore components from the Beto Marketplace.",
+  "description": "Connect your vault to the Beto ecosystem. Manage Datacore components, sync rewards, and access your account.",
   "author": "beto.group",
   "authorUrl": "https://beto.group",
   "isDesktopOnly": false

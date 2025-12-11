@@ -1,5 +1,5 @@
 import { App, TFolder, TFile, Notice, normalizePath } from 'obsidian';
-import { BetoMarketplaceSettings } from './settings';
+import { BetoNexusSettings } from './settings';
 
 export interface InstalledComponent {
 	id: string;
@@ -10,9 +10,9 @@ export interface InstalledComponent {
 
 export class ComponentManager {
 	app: App;
-	settings: BetoMarketplaceSettings;
+	settings: BetoNexusSettings;
 
-	constructor(app: App, settings: BetoMarketplaceSettings) {
+	constructor(app: App, settings: BetoNexusSettings) {
 		this.app = app;
 		this.settings = settings;
 	}

@@ -2,26 +2,26 @@ import { App, PluginSettingTab, Setting, Plugin, setIcon, requestUrl, Platform }
 import { API_URL, FRONTEND_URL, PLUGIN_HEADERS } from './constants';
 import { ComponentManager } from './manager';
 
-export interface BetoMarketplaceSettings {
+export interface BetoNexusSettings {
 	downloadFolder: string;
 	authToken: string | null;
 	deviceId: string;
 }
 
-export const DEFAULT_SETTINGS: BetoMarketplaceSettings = {
+export const DEFAULT_SETTINGS: BetoNexusSettings = {
 	downloadFolder: '_RESOURCES/DATACORE',
 	authToken: null,
 	deviceId: ''
 }
 
-export class BetoMarketplaceSettingTab extends PluginSettingTab {
-	plugin: Plugin & { settings: BetoMarketplaceSettings; saveSettings: () => Promise<void> };
+export class BetoNexusSettingTab extends PluginSettingTab {
+	plugin: Plugin & { settings: BetoNexusSettings; saveSettings: () => Promise<void> };
 	manager: ComponentManager;
 	userProfile: any = null;
 	accountSectionContainer: HTMLElement | null = null;
 	accountDetailsEl: HTMLDetailsElement | null = null;
 
-	constructor(app: App, plugin: Plugin & { settings: BetoMarketplaceSettings; saveSettings: () => Promise<void> }, manager: ComponentManager) {
+	constructor(app: App, plugin: Plugin & { settings: BetoNexusSettings; saveSettings: () => Promise<void> }, manager: ComponentManager) {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.manager = manager;
@@ -114,15 +114,6 @@ export class BetoMarketplaceSettingTab extends PluginSettingTab {
 			this.accountDetailsEl.removeAttribute('open');
 			this.updateAccountSectionHeader();
 		}
-
-		// --- Library Section ---
-		this.createSection(containerEl, 'My Library', 'Manage your installed Datacore components.', (content) => {
-			// We need to handle the async nature here carefully to avoid double rendering
-			// Create a container for the list immediately
-			const listContainer = content.createDiv({ cls: 'beto-library-list' });
-			// Trigger the load
-			this.renderLibrary(listContainer);
-		});
 
 		// --- Configuration Section ---
 		this.createSection(containerEl, 'Configuration', 'Plugin settings.', (content) => {
@@ -226,32 +217,5 @@ export class BetoMarketplaceSettingTab extends PluginSettingTab {
 
 		buildContent(content);
 		return details;
-	}
-
-	async renderLibrary(container: HTMLElement) {
-		container.empty(); // Ensure clean state
-		const components = await this.manager.getInstalledComponents();
-
-		if (components.length === 0) {
-			const empty = container.createDiv({ cls: 'beto-empty-state' });
-			setIcon(empty.createDiv(), 'box');
-			empty.createDiv({ text: 'No components installed.' });
-			return;
-		}
-
-		for (const component of components) {
-			new Setting(container)
-				.setName(component.name)
-				.setDesc(`ID: ${component.id}`)
-				.addButton(btn => btn
-					.setIcon('trash')
-					.setTooltip('Delete Component')
-					.onClick(async () => {
-						if (confirm(`Are you sure you want to delete ${component.name}?`)) {
-							await this.manager.deleteComponent(component.id);
-							this.display(); 
-						}
-					}));
-		}
 	}
 }
