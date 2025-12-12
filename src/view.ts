@@ -125,13 +125,13 @@ export class BetoNexusView extends ItemView {
     } else {
         userCard.addClass("not-logged-in");
         userCard.createEl("h2", { text: "Welcome to Beto Nexus" });
-        userCard.createEl("p", { text: "Connect your account to access premium components and sync your settings." });
+        userCard.createEl("p", { text: "Please log in via Settings to access premium components and sync your settings." });
         
         new ButtonComponent(userCard)
-            .setButtonText("Connect Account")
+            .setButtonText("Open Settings")
             .setCta()
             .onClick(() => {
-                window.open("https://beto.app/login?source=obsidian", "_blank");
+                this.openSettings();
             });
     }
 
